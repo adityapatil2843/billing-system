@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Server, Check, AlertCircle, RefreshCw, RotateCcw } from 'lucide-react';
-import { getBaseApiUrl, setCustomApiUrl, resetApiUrl, api } from '../lib/api';
+import { getBaseApiUrl, getDefaultConfiguredApiUrl, setCustomApiUrl, resetApiUrl, api } from '../lib/api';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -18,6 +18,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
     message: string;
     latency?: number;
   } | null>(null);
+
+  const defaultApiUrl = getDefaultConfiguredApiUrl();
 
   useEffect(() => {
     if (isOpen) {
@@ -36,7 +38,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
       const cleanUrl = url.trim().replace(/\/+$/, '');
       const finalUrl = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
       const start = Date.now();
-      const res = await fetch(`${finalUrl}/health`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetch(`${finalUrl}/health`, { signal: AbortSignal.timeout(6000) });
       const latency = Date.now() - start;
       if (res.ok) {
         setTestResult({
@@ -53,7 +55,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
     } catch (err: any) {
       setTestResult({
         success: false,
-        message: err.message || 'Unable to connect to specified backend endpoint',
+        message: err.message || 'Unable to connect to specified backend endpoint. (Note: HTTPS sites cannot connect to HTTP endpoints due to mixed content)',
       });
     } finally {
       setTesting(false);
@@ -68,7 +70,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
 
   const handleReset = () => {
     resetApiUrl();
-    setUrl('http://localhost:5000/api');
+    setUrl(defaultApiUrl);
     setTestResult(null);
   };
 
@@ -102,11 +104,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
               type="text"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="http://localhost:5000/api"
+              placeholder="https://your-backend.onrender.com/api"
               className="mt-1.5 w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
             <p className="mt-1.5 text-[11px] text-slate-400">
-              Use <code className="rounded bg-slate-800 px-1 py-0.5 text-indigo-300">http://localhost:5000/api</code> for local testing or your machine LAN IP for cross-device access.
+              Set your live production backend URL (e.g. <code className="rounded bg-slate-800 px-1 py-0.5 text-indigo-300">https://scan-bill-server.onrender.com/api</code>) or localhost.
             </p>
           </div>
 
@@ -114,17 +116,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
+              onClick={() => setUrl(defaultApiUrl)}
+              className="rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-1 text-xs text-slate-300 hover:border-slate-700 hover:text-white"
+            >
+              Default Config
+            </button>
+            <button
+              type="button"
               onClick={() => setUrl('http://localhost:5000/api')}
               className="rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-1 text-xs text-slate-300 hover:border-slate-700 hover:text-white"
             >
               Localhost (5000)
-            </button>
-            <button
-              type="button"
-              onClick={() => setUrl('http://10.32.145.253:5000/api')}
-              className="rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-1 text-xs text-slate-300 hover:border-slate-700 hover:text-white"
-            >
-              LAN IP (10.32.145.253)
             </button>
           </div>
 
