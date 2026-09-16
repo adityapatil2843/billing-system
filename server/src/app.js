@@ -20,9 +20,9 @@ app.use(
   })
 );
 
-// Body parser
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body parser with support for base64 image data
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Request logger for development
 if (process.env.NODE_ENV !== 'test') {

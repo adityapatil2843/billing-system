@@ -241,10 +241,10 @@ export default function HomePage() {
       />
 
       {/* Main Container */}
-      <main className="mx-auto flex-1 w-full max-w-7xl px-4 py-6 sm:px-6">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+      <main className="mx-auto flex-1 w-full max-w-7xl px-3 py-4 sm:px-6 sm:py-6 pb-24 lg:pb-6">
+        <div className="grid grid-cols-1 gap-5 lg:gap-6 lg:grid-cols-12">
           {/* Left Column: Scanner & Product Preview (7 cols on lg) */}
-          <div className="space-y-6 lg:col-span-7">
+          <div className="space-y-5 lg:space-y-6 lg:col-span-7">
             {/* Interactive Scanner */}
             <ScannerSection
               onBarcodeScanned={handleBarcodeScanned}
@@ -262,41 +262,41 @@ export default function HomePage() {
             )}
 
             {/* Quick Metrics Bar */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3.5 backdrop-blur-sm">
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                  <Barcode className="h-3.5 w-3.5 text-cyan-400" />
-                  <span>Scanner Engine</span>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-2.5 sm:p-3.5 backdrop-blur-sm">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-slate-400">
+                  <Barcode className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-cyan-400" />
+                  <span className="truncate">Scanner</span>
                 </div>
-                <div className="mt-1 text-sm font-bold text-white">
-                  Real-time POS
+                <div className="mt-1 text-xs sm:text-sm font-bold text-white truncate">
+                  Dual POS Engine
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3.5 backdrop-blur-sm">
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                  <ShoppingCart className="h-3.5 w-3.5 text-indigo-400" />
-                  <span>Active Cart</span>
+              <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-2.5 sm:p-3.5 backdrop-blur-sm">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-slate-400">
+                  <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-indigo-400" />
+                  <span className="truncate">Active Cart</span>
                 </div>
-                <div className="mt-1 text-sm font-bold text-indigo-300">
+                <div className="mt-1 text-xs sm:text-sm font-bold text-indigo-300">
                   ₹{activeList?.total || 0}
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3.5 backdrop-blur-sm">
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                  <Zap className="h-3.5 w-3.5 text-emerald-400" />
-                  <span>Database Link</span>
+              <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-2.5 sm:p-3.5 backdrop-blur-sm">
+                <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-slate-400">
+                  <Zap className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-400" />
+                  <span className="truncate">Database</span>
                 </div>
-                <div className="mt-1 text-sm font-bold text-emerald-400">
-                  {serverStatus === 'connected' ? 'MongoDB Atlas' : 'Offline'}
+                <div className="mt-1 text-xs sm:text-sm font-bold text-emerald-400 truncate">
+                  {serverStatus === 'connected' ? 'Atlas MongoDB' : 'Offline'}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Live Shopping Cart (5 cols on lg) */}
-          <div className="lg:col-span-5">
+          {/* Right Column: Live Shopping Cart (Desktop view: 5 cols on lg) */}
+          <div className="hidden lg:block lg:col-span-5">
             <div className="sticky top-20">
               <CartDrawer
                 shoppingList={activeList}
@@ -310,6 +310,69 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+
+      {/* Floating Bottom Bar on Mobile when Cart has items */}
+      {totalItemCount > 0 && (
+        <div className="fixed bottom-3 left-3 right-3 z-40 lg:hidden">
+          <div className="flex items-center justify-between rounded-2xl border border-indigo-500/40 bg-slate-900/95 p-3 shadow-2xl backdrop-blur-xl">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-md shadow-indigo-600/30">
+                {totalItemCount}
+              </div>
+              <div>
+                <div className="text-xs text-slate-400">Cart Total</div>
+                <div className="text-sm font-black text-emerald-400">
+                  ₹{(activeList?.total || 0).toFixed(2)}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsMobileCartOpen(true)}
+                className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-700"
+              >
+                View Cart
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileCartOpen(false);
+                  setIsInvoiceOpen(true);
+                }}
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-600/30"
+              >
+                Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Cart Slide-Up Drawer / Modal */}
+      {isMobileCartOpen && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 p-0 sm:p-4 backdrop-blur-sm lg:hidden animate-in fade-in duration-200">
+          <div
+            className="fixed inset-0"
+            onClick={() => setIsMobileCartOpen(false)}
+          />
+          <div className="relative z-10 w-full max-w-lg max-h-[85vh] overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-800 bg-slate-950 p-2 shadow-2xl animate-in slide-in-from-bottom duration-300">
+            <CartDrawer
+              shoppingList={activeList}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveItem={handleRemoveItem}
+              onClearCart={handleClearCart}
+              onCheckout={() => {
+                setIsMobileCartOpen(false);
+                setIsInvoiceOpen(true);
+              }}
+              isUpdating={isCartUpdating}
+              onClose={() => setIsMobileCartOpen(false)}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Modals */}
       <SettingsModal

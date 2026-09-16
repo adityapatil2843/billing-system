@@ -20,6 +20,7 @@ interface CartDrawerProps {
   onClearCart: () => Promise<void>;
   onCheckout: () => void;
   isUpdating: boolean;
+  onClose?: () => void;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -29,13 +30,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onClearCart,
   onCheckout,
   isUpdating,
+  onClose,
 }) => {
   const items = shoppingList?.items || [];
   const total = shoppingList?.total || 0;
   const itemCount = items.reduce((acc, it) => acc + it.quantity, 0);
 
   return (
-    <div className="flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-5 backdrop-blur-xl shadow-xl">
+    <div className="flex h-full flex-col rounded-2xl border border-slate-800 bg-slate-900/70 p-4 sm:p-5 backdrop-blur-xl shadow-xl">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-4">
         <div className="flex items-center gap-2.5">
@@ -50,17 +52,28 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           </div>
         </div>
 
-        {items.length > 0 && (
-          <button
-            onClick={onClearCart}
-            disabled={isUpdating}
-            className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-slate-400 transition hover:bg-slate-800 hover:text-rose-400"
-            title="Clear all items in cart"
-          >
-            <RotateCcw className="h-3 w-3" />
-            Clear
-          </button>
-        )}
+        <div className="flex items-center gap-1.5">
+          {items.length > 0 && (
+            <button
+              onClick={onClearCart}
+              disabled={isUpdating}
+              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-slate-400 transition hover:bg-slate-800 hover:text-rose-400"
+              title="Clear all items in cart"
+            >
+              <RotateCcw className="h-3 w-3" />
+              <span>Clear</span>
+            </button>
+          )}
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Cart Items List */}

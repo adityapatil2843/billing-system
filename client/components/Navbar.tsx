@@ -35,35 +35,36 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleCart,
 }) => {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/90 backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-2.5 sm:px-6 sm:py-3">
         {/* Left: Brand */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-500 to-cyan-400 shadow-lg shadow-indigo-500/25">
-            <Barcode className="h-6 w-6 text-white" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-500 to-cyan-400 shadow-lg shadow-indigo-500/25 shrink-0">
+            <Barcode className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold tracking-tight text-white sm:text-xl">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="text-base sm:text-xl font-bold tracking-tight text-white">
                 Scan<span className="text-indigo-400">&</span>Bill
               </span>
-              <span className="rounded-md bg-indigo-950/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-indigo-300 border border-indigo-800/60">
+              <span className="rounded-md bg-indigo-950/90 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-indigo-300 border border-indigo-800/60">
                 POS
               </span>
             </div>
-            <p className="hidden text-xs text-slate-400 sm:block">
+            <p className="hidden text-xs text-slate-400 md:block">
               Smart Supermarket Barcode Checkout System
             </p>
           </div>
         </div>
 
         {/* Center/Right Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           {/* Server Connection Status Pill */}
-          <div
+          <button
+            type="button"
             onClick={onRefreshHealth}
             title="Click to re-check server connection"
-            className={`flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all ${
               serverStatus === 'connected'
                 ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20'
                 : serverStatus === 'checking'
@@ -94,52 +95,58 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <span className="hidden sm:inline">
               {serverStatus === 'connected'
-                ? `Server Online ${serverLatency ? `(${serverLatency}ms)` : ''}`
+                ? `Online ${serverLatency ? `(${serverLatency}ms)` : ''}`
                 : serverStatus === 'checking'
                 ? 'Checking...'
-                : 'Server Offline'}
+                : 'Offline'}
             </span>
             <RefreshCw
               className={`h-3 w-3 ${serverStatus === 'checking' ? 'animate-spin' : ''}`}
             />
-          </div>
+          </button>
 
           {/* Browse Catalog Button */}
           <button
+            type="button"
             onClick={onOpenCatalog}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/90 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-slate-700 hover:bg-slate-800 sm:text-sm"
+            className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:border-slate-700 hover:bg-slate-800"
+            title="Open Product Catalog"
           >
-            <Package className="h-4 w-4 text-cyan-400" />
+            <Package className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-cyan-400" />
             <span className="hidden md:inline">Catalog</span>
           </button>
 
           {/* Register New Product Button */}
           <button
+            type="button"
             onClick={onOpenAddProduct}
-            className="flex items-center gap-1.5 rounded-lg border border-indigo-600/40 bg-indigo-600/10 px-3 py-1.5 text-xs font-medium text-indigo-300 transition hover:bg-indigo-600/20 sm:text-sm"
+            className="flex items-center gap-1 rounded-lg border border-indigo-600/40 bg-indigo-600/10 px-2.5 py-1.5 text-xs font-medium text-indigo-300 transition hover:bg-indigo-600/20"
+            title="Register New Product"
           >
-            <PlusCircle className="h-4 w-4 text-indigo-400" />
+            <PlusCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-400" />
             <span className="hidden md:inline">Add Product</span>
           </button>
 
           {/* Settings Button */}
           <button
+            type="button"
             onClick={onOpenSettings}
             title="Backend Server IP Settings"
-            className="rounded-lg border border-slate-800 bg-slate-900/90 p-2 text-slate-400 transition hover:border-slate-700 hover:text-slate-200"
+            className="rounded-lg border border-slate-800 bg-slate-900/90 p-1.5 sm:p-2 text-slate-400 transition hover:border-slate-700 hover:text-slate-200"
           >
-            <Settings className="h-4 w-4" />
+            <Settings className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </button>
 
           {/* Cart Mobile Toggle */}
           <button
+            type="button"
             onClick={onToggleCart}
-            className="relative flex items-center gap-2 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500 sm:text-sm lg:hidden"
+            className="relative flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500 lg:hidden"
           >
-            <ShoppingBag className="h-4 w-4" />
-            <span>Cart</span>
+            <ShoppingBag className="h-3.5 w-3.5" />
+            <span className="hidden xs:inline">Cart</span>
             {cartCount > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-bold text-indigo-700">
+              <span className="flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-white text-[10px] font-bold text-indigo-700">
                 {cartCount}
               </span>
             )}
